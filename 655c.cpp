@@ -23,7 +23,7 @@ typedef long long int 	LL;
 #define lldout(n) printf("%lld\n",n)
 #define fast_io ios_base::sync_with_stdio(false);cin.tie(NULL)
 
-#define TRACE
+//#define TRACE
 
 #ifdef TRACE
 #define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
@@ -42,67 +42,25 @@ void __f(const char* names, Arg1&& arg1, Args&&... args){
 //FILE *fin = freopen("in","r",stdin);
 //FILE *fout = freopen("out","w",stdout);
 
-int vs[200005];
-bool m[200005];
-VII g[200005];
-VII ng[200005];
-LL edge=0,diameter=0,farnode;
-
-bool dfs(int u){
-	vs[u]=1;
-	bool fl;
-	fl=(m[u])?(true):(false);
-	for(int i=0;i<SZ(g[u]);i++){
-		int w=g[u][i].F;
-        int e=g[u][i].S;
-		if(!vs[w]){
-			bool var=dfs(w);
-			fl|=var;
-			if(var){
-				ng[u].PB(MP(w,e));
-				ng[w].PB(MP(u,e));
-				edge+=e*1LL;
-			}
-		}
-	}
-	return fl;
-}
-
-void dia(int u,LL l){
-	vs[u]=1;
-	if(l>diameter){
-		diameter=l;
-		farnode=u;
-	}
-	else if(l==diameter){
-		farnode=min(u,farnode);
-	}
-	for(int i=0;i<SZ(ng[u]);i++){
-		LL w=ng[u][i].F,e=ng[u][i].S;
-		if(!vs[w])
-			dia(w,l+e);
-	}
-}
-
+int a[100005];
+VI v;
 int main(){
-	int n,q,a,b,c;
-	si(n);si(q);
-	for(int i=0;i<q;i++){
-		si(a);
-		m[a]=true;
-	}
-	for(int i=0;i<n-1;i++){
-		si(a);si(b);si(c);
-		g[a].PB(MP(b,c));
-		g[b].PB(MP(a,c));
-	}
-	dfs(a);
-	SET(vs,0);
-	farnode=a;
-	dia(a,0);
-	SET(vs,0);
-	diameter=0,a=farnode;
-	dia(a,0);
-	dout(2*edge-diameter);
+    int n,k;
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    for(int i=0;i<n;i++) a[i] = s[i] - '0';
+    for(int i=0;i<n;i++) if(!a[i]) v.PB(i);
+    int mn = 1e9+7;
+    int pos = 0;
+    for(int i=0;i<SZ(v)-k;i++){
+        int l = i,r = i+k;
+        while(max(v[r]-v[pos+1],v[pos+1]-v[l])<mn and pos+1<=r){
+            pos++;
+            mn = max(v[r]-v[pos],v[pos]-v[l]);
+            trace(pos,val);
+        }
+    }
+    dout(mn);
 	return 0;
 }

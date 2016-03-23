@@ -42,67 +42,44 @@ void __f(const char* names, Arg1&& arg1, Args&&... args){
 //FILE *fin = freopen("in","r",stdin);
 //FILE *fout = freopen("out","w",stdout);
 
-int vs[200005];
-bool m[200005];
-VII g[200005];
-VII ng[200005];
-LL edge=0,diameter=0,farnode;
-
-bool dfs(int u){
-	vs[u]=1;
-	bool fl;
-	fl=(m[u])?(true):(false);
-	for(int i=0;i<SZ(g[u]);i++){
-		int w=g[u][i].F;
-        int e=g[u][i].S;
-		if(!vs[w]){
-			bool var=dfs(w);
-			fl|=var;
-			if(var){
-				ng[u].PB(MP(w,e));
-				ng[w].PB(MP(u,e));
-				edge+=e*1LL;
-			}
-		}
-	}
-	return fl;
-}
-
-void dia(int u,LL l){
-	vs[u]=1;
-	if(l>diameter){
-		diameter=l;
-		farnode=u;
-	}
-	else if(l==diameter){
-		farnode=min(u,farnode);
-	}
-	for(int i=0;i<SZ(ng[u]);i++){
-		LL w=ng[u][i].F,e=ng[u][i].S;
-		if(!vs[w])
-			dia(w,l+e);
-	}
-}
+const LL mod = 1e9+7;
+set<II> s;
+int val[30];
+LL dp[30];
+int t = 1;
+char a[1000006];
 
 int main(){
-	int n,q,a,b,c;
-	si(n);si(q);
-	for(int i=0;i<q;i++){
-		si(a);
-		m[a]=true;
-	}
-	for(int i=0;i<n-1;i++){
-		si(a);si(b);si(c);
-		g[a].PB(MP(b,c));
-		g[b].PB(MP(a,c));
-	}
-	dfs(a);
-	SET(vs,0);
-	farnode=a;
-	dia(a,0);
-	SET(vs,0);
-	diameter=0,a=farnode;
-	dia(a,0);
-	dout(2*edge-diameter);
+    fast_io;
+    int n,k;
+    si(n);si(k);
+    scanf("%s",a);
+    for(int i=0;i<k;i++) s.insert(MP(val[i],i));
+    int m = strlen(a);
+    LL sum = 0;   
+    for(int i=0;i<m;i++){
+        LL add = sum + 1LL;
+        add %= mod;
+        sum += add - dp[a[i]-'a'] + mod;
+        sum %= mod;
+        dp[a[i] - 'a'] = add;
+
+        s.erase(s.find(MP(val[a[i]-'a'],a[i]-'a')));
+        val[a[i]-'a'] = t++;
+        s.insert(MP(val[a[i]-'a'],a[i]-'a'));
+    }
+    for(int i=0;i<n;i++){
+        int j = s.begin()->S; //lru
+        s.erase(s.begin());
+        val[j] = t++;
+        s.insert(MP(val[j],j));
+        LL add = sum + 1LL;
+        add %= mod;
+        sum += add - dp[j] + mod;
+        sum %= mod;
+        dp[j] = add;
+    }
+    sum = (sum+1LL) % mod;
+    lldout(sum);
 	return 0;
 }

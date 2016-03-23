@@ -42,67 +42,22 @@ void __f(const char* names, Arg1&& arg1, Args&&... args){
 //FILE *fin = freopen("in","r",stdin);
 //FILE *fout = freopen("out","w",stdout);
 
-int vs[200005];
-bool m[200005];
-VII g[200005];
-VII ng[200005];
-LL edge=0,diameter=0,farnode;
-
-bool dfs(int u){
-	vs[u]=1;
-	bool fl;
-	fl=(m[u])?(true):(false);
-	for(int i=0;i<SZ(g[u]);i++){
-		int w=g[u][i].F;
-        int e=g[u][i].S;
-		if(!vs[w]){
-			bool var=dfs(w);
-			fl|=var;
-			if(var){
-				ng[u].PB(MP(w,e));
-				ng[w].PB(MP(u,e));
-				edge+=e*1LL;
-			}
-		}
-	}
-	return fl;
-}
-
-void dia(int u,LL l){
-	vs[u]=1;
-	if(l>diameter){
-		diameter=l;
-		farnode=u;
-	}
-	else if(l==diameter){
-		farnode=min(u,farnode);
-	}
-	for(int i=0;i<SZ(ng[u]);i++){
-		LL w=ng[u][i].F,e=ng[u][i].S;
-		if(!vs[w])
-			dia(w,l+e);
-	}
-}
-
+string a;
 int main(){
-	int n,q,a,b,c;
-	si(n);si(q);
-	for(int i=0;i<q;i++){
-		si(a);
-		m[a]=true;
-	}
-	for(int i=0;i<n-1;i++){
-		si(a);si(b);si(c);
-		g[a].PB(MP(b,c));
-		g[b].PB(MP(a,c));
-	}
-	dfs(a);
-	SET(vs,0);
-	farnode=a;
-	dia(a,0);
-	SET(vs,0);
-	diameter=0,a=farnode;
-	dia(a,0);
-	dout(2*edge-diameter);
+    int n,k;
+    cin>>a;
+    dp[0][a[0]-'a'] = 0;
+    for(int i=1;i<m;i++){
+        int mxval = 0;
+        int c = a[i] - 'a';
+        for(int j=0;j<k;j++){
+            if(c!=j) mxval = max(mxval,2*dp[i-1][j]);
+        }
+        if(i==1) dp[i][c] = max(2*dp[i-1][c],mxval);
+        else dp[i][c] = max(2*dp[i-1][c] - dp[i-2][c],mxval);
+        dp[i][c] %= MOD;
+    }
+    
+
 	return 0;
 }
