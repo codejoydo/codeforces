@@ -42,62 +42,10 @@ void __f(const char* names, Arg1&& arg1, Args&&... args){
 //FILE *fin = freopen("in","r",stdin);
 //FILE *fout = freopen("out","w",stdout);
 
-int n;
-int vs[100005];
-VI g[100005];
-II e[100005];
-LL m[100005];
-double tot;
-LL wt[100005];
-
-int adj(int i,int a){
-  if(e[i].F==a) return e[i].S;
-  return e[i].F;
-}
-
-int dfs(int u){
-  vs[u] = 1;
-  int cnt = 1;
-  for(int i=0;i<SZ(g[u]);i++){
-    int k = g[u][i];
-    int w = adj(k,u);
-    if(!vs[w]){
-      int tp = dfs(w);
-      int tp1 = n - tp;
-      m[k] = 2*tp*tp1;
-      cnt++;
-    }
-  }
-  return cnt;
-}
-
 int main(){
-  si(n);
-  for(int i=0;i<n-1;i++){
-    int a,b,c;
-    si(a);si(b);si(c);
-    g[a].PB(i);
-    g[b].PB(i);
-    e[i] = MP(a,b);
-    wt[i] = c;
-  }
-
-  dfs(1);
-  double sum = 0;
-  for(int i=0;i<n-1;i++){
-    sum += wt[i] * m[i];
-  }
-  tot =  3.0/(double)(n*(n-1));
-
-  int q;
-  si(q);
-  for(int i=0;i<q;i++){
-    int k,l;
-    si(k);si(l);k--;
-    LL dec = wt[k] - l;
-    wt[k] = l;
-    sum -= dec * m[k];
-    printf("%.14lf\n",sum*tot);
-  }
+	string a,b;
+	cin>>a>>b;
+	if(a!=b) cout<<1<<endl;
+	else cout<<a<<endl;
 	return 0;
 }
